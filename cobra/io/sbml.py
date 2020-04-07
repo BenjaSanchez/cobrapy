@@ -1510,7 +1510,7 @@ def _sbase_annotations(sbase, annotation):
     sbase.setMetaId(meta_id)
 
     # rdf_items = []
-    for provider, data in iteritems(annotation_data):
+    for provider, data in sorted(iteritems(annotation_data)):
 
         # set SBOTerm
         if provider in ["SBO", "sbo"]:
