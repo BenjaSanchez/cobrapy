@@ -36,6 +36,7 @@ import re
 import traceback
 from collections import defaultdict, namedtuple
 from copy import deepcopy
+from operator import attrgetter
 from sys import platform
 
 import libsbml
@@ -1141,7 +1142,7 @@ def _model_to_sbml(cobra_model, f_replace=None, units=True):
             "groups", True)
         doc.setPackageRequired("groups", False)
         model_group = model.getPlugin("groups")  # noqa: E501 type: libsbml.GroupsModelPlugin
-        for cobra_group in cobra_model.groups:
+        for cobra_group in sorted(cobra_model.groups, key=attrgetter("id")):
             group = model_group.createGroup()  # type: libsbml.Group
             if f_replace and F_GROUP_REV in f_replace:
                 gid = f_replace[F_GROUP_REV](cobra_group.id)
