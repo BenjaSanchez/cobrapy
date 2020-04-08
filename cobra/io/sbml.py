@@ -1155,6 +1155,7 @@ def _model_to_sbml(cobra_model, f_replace=None, units=True):
             _sbase_notes_dict(group, cobra_group.notes)
             _sbase_annotations(group, cobra_group.annotation)
 
+            cobra_group.members.sort(key = lambda x: cobra_model.reactions.index(x))
             for cobra_member in cobra_group.members:
                 member = group.createMember()  # type: libsbml.Member
                 mid = cobra_member.id
