@@ -1079,8 +1079,8 @@ def _model_to_sbml(cobra_model, f_replace=None, units=True):
         _sbase_notes_dict(reaction, cobra_reaction.notes)
 
         # stoichiometry
-        for metabolite, stoichiometry in iteritems(
-                cobra_reaction._metabolites):
+        for metabolite, stoichiometry in sorted(iteritems(
+                cobra_reaction._metabolites), key = lambda x: cobra_model.metabolites.index(x[0])):
             sid = metabolite.id
             if f_replace and F_SPECIE_REV in f_replace:
                 sid = f_replace[F_SPECIE_REV](sid)
