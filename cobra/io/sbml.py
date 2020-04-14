@@ -36,6 +36,7 @@ import re
 import traceback
 from collections import defaultdict, namedtuple
 from copy import deepcopy
+from operator import attrgetter
 from sys import platform
 
 import libsbml
@@ -1078,8 +1079,8 @@ def _model_to_sbml(cobra_model, f_replace=None, units=True):
         _sbase_notes_dict(reaction, cobra_reaction.notes)
 
         # stoichiometry
-        for metabolite, stoichiometry in iteritems(
-                cobra_reaction._metabolites):
+        for metabolite, stoichiometry in sorted(iteritems(
+                cobra_reaction._metabolites), key = lambda x: cobra_model.metabolites.index(x[0])):
             sid = metabolite.id
             if f_replace and F_SPECIE_REV in f_replace:
                 sid = f_replace[F_SPECIE_REV](sid)
@@ -1141,7 +1142,7 @@ def _model_to_sbml(cobra_model, f_replace=None, units=True):
             "groups", True)
         doc.setPackageRequired("groups", False)
         model_group = model.getPlugin("groups")  # noqa: E501 type: libsbml.GroupsModelPlugin
-        for cobra_group in cobra_model.groups:
+        for cobra_group in sorted(cobra_model.groups, key=attrgetter("id")):
             group = model_group.createGroup()  # type: libsbml.Group
             if f_replace and F_GROUP_REV in f_replace:
                 gid = f_replace[F_GROUP_REV](cobra_group.id)
@@ -1154,6 +1155,7 @@ def _model_to_sbml(cobra_model, f_replace=None, units=True):
             _sbase_notes_dict(group, cobra_group.notes)
             _sbase_annotations(group, cobra_group.annotation)
 
+            cobra_group.members.sort(key = lambda x: cobra_model.reactions.index(x))
             for cobra_member in cobra_group.members:
                 member = group.createMember()  # type: libsbml.Member
                 mid = cobra_member.id
@@ -1510,7 +1512,7 @@ def _sbase_annotations(sbase, annotation):
     sbase.setMetaId(meta_id)
 
     # rdf_items = []
-    for provider, data in iteritems(annotation_data):
+    for provider, data in sorted(iteritems(annotation_data)):
 
         # set SBOTerm
         if provider in ["SBO", "sbo"]:
