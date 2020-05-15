@@ -45,6 +45,7 @@ from six import iteritems, raise_from, string_types
 import cobra
 from cobra.core import Gene, Group, Metabolite, Model, Reaction
 from cobra.core.gene import parse_gpr
+from cobra.io.yaml import save_yaml_model
 from cobra.manipulation.validate import check_metabolite_compartment_formula
 from cobra.util.solver import linear_reaction_coefficients, set_objective
 
@@ -896,6 +897,9 @@ def write_sbml_model(cobra_model, filename, f_replace=F_REPLACE, **kwargs):
         # write to file handle
         sbml_str = libsbml.writeSBMLToString(doc)
         filename.write(sbml_str)
+
+    # Save model as yaml as well (flavour of this fork):
+    save_yaml_model(cobra_model, filename)
 
 
 def _model_to_sbml(cobra_model, f_replace=None, units=True):
