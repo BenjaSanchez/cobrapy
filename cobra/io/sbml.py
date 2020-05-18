@@ -899,7 +899,7 @@ def write_sbml_model(cobra_model, filename, f_replace=F_REPLACE, **kwargs):
         filename.write(sbml_str)
 
     # Save model as yaml as well (flavour of this fork):
-    save_yaml_model(cobra_model, filename)
+    save_yaml_model(cobra_model, filename.replace(".xml", ".yml"))
 
 
 def _model_to_sbml(cobra_model, f_replace=None, units=True):
